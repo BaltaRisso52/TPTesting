@@ -9,7 +9,7 @@ public class Tienda
         inventario.Add(producto);
     }
 
-    public Producto? BuscarProducto(string nombre)
+    public Producto BuscarProducto(string nombre)
     {
         foreach (Producto producto in inventario)
         {
@@ -19,20 +19,21 @@ public class Tienda
             }
         }
 
-        return null;
+        throw new KeyNotFoundException(
+            $"No se encontró el producto: {nombre}");
     }
 
-    public bool EliminarProducto(string nombre)
+    public void EliminarProducto(string nombre)
     {
-        foreach (Producto producto in inventario)
+        Producto? productoEncontrado = inventario.Find(
+            p => p.Nombre == nombre);
+
+        if (productoEncontrado == null)
         {
-            if (producto.Nombre == nombre)
-            {
-                inventario.Remove(producto);
-                return true;
-            }
+            throw new KeyNotFoundException(
+                $"No se encontró el producto: {nombre}");
         }
 
-        return false;
+        inventario.Remove(productoEncontrado);
     }
 }

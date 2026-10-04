@@ -34,19 +34,16 @@ public class UnitTest1
 
         var resultado = tienda.BuscarProducto("Gaseosa");
 
-        Assert.NotNull(resultado);
-        Assert.Equal("Gaseosa", resultado.Nombre);
-        Assert.Equal(2000m, resultado.Precio);
+        Assert.Same(producto, resultado);
     }
 
     [Fact]
-    public void BuscarProducto_Inexistente_DebeDevolverNull()
+    public void BuscarProducto_Inexistente_DebeLanzarExcepcion()
     {
         Tienda tienda = new();
 
-        var resultado = tienda.BuscarProducto("Pizza");
-
-        Assert.Null(resultado);
+        Assert.Throws<KeyNotFoundException>(
+            () => tienda.BuscarProducto("Pizza"));
     }
 
     [Fact]
@@ -58,9 +55,41 @@ public class UnitTest1
 
         tienda.AgregarProducto(producto);
 
-        bool eliminado = tienda.EliminarProducto("Papas");
+        tienda.EliminarProducto("Papas");
 
-        Assert.True(eliminado);
-        Assert.Null(tienda.BuscarProducto("Papas"));
+        Assert.Throws<KeyNotFoundException>(
+            () => tienda.BuscarProducto("Papas"));
+    }
+
+    [Fact]
+    public void EliminarProducto_Inexistente_DebeLanzarExcepcion()
+    {
+        Tienda tienda = new();
+
+        Assert.Throws<KeyNotFoundException>(
+            () => tienda.EliminarProducto("Pizza"));
+    }
+
+    [Fact]
+    public void ActualizarPrecio_Valido_DebeModificarPrecio()
+    {
+        var producto = new Producto(
+            "Hamburguesa", 8000m, "Comida");
+
+        producto.ActualizarPrecio(9000m);
+
+        Assert.Equal(9000m, producto.Precio);
+    }
+
+    [Fact]
+    public void ActualizarPrecio_Negativo_DebeLanzarExcepcion()
+    {
+        var producto = new Producto(
+            "Hamburguesa", 8000m, "Comida");
+
+        Assert.Throws<ArgumentException>(
+            () => producto.ActualizarPrecio(-100m));
+
+        Assert.Equal(8000m, producto.Precio);
     }
 }
