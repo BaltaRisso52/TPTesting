@@ -36,4 +36,20 @@ public class Tienda
 
         inventario.Remove(productoEncontrado);
     }
+
+    public void AplicarDescuento(string nombre, decimal porcentaje)
+    {
+        if (porcentaje < 0 || porcentaje > 100)
+        {
+            throw new ArgumentException(
+                "El descuento debe estar entre 0 y 100.");
+        }
+
+        Producto producto = BuscarProducto(nombre);
+
+        decimal nuevoPrecio =
+            producto.Precio * (1 - porcentaje / 100m);
+
+        producto.ActualizarPrecio(nuevoPrecio);
+    }
 }

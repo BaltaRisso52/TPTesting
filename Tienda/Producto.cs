@@ -4,7 +4,7 @@ namespace Tienda;
 public class Producto
 {
     public string Nombre { get; set; }
-    public decimal Precio { get; private set; }
+    public virtual decimal Precio { get; private set; }
     public string Categoria { get; set; }
 
     public Producto(string nombre, decimal precio, string categoria)
@@ -14,7 +14,7 @@ public class Producto
         Categoria = categoria;
     }
 
-    public void ActualizarPrecio(decimal nuevoPrecio)
+    public virtual void ActualizarPrecio(decimal nuevoPrecio)
     {
         if (nuevoPrecio < 0)
         {

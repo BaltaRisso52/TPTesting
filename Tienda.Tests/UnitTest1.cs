@@ -1,6 +1,6 @@
-﻿
-using Xunit;
+﻿using Xunit;
 using Tienda;
+using Moq;
 
 namespace Tienda.Tests;
 
@@ -91,5 +91,43 @@ public class UnitTest1
             () => producto.ActualizarPrecio(-100m));
 
         Assert.Equal(8000m, producto.Precio);
+    }
+
+    [Fact]
+    public void AplicarDescuento_DebeCalcularElNuevoPrecio()
+    {
+        var mockProducto = new Mock<Producto>(
+            "Hamburguesa", 8000m, "Comida");
+
+        mockProducto.SetupGet(p => p.Precio)
+            .Returns(8000m);
+
+        Tienda tienda = new();
+        tienda.AgregarProducto(mockProducto.Object);
+
+        tienda.AplicarDescuento("Hamburguesa", 25m);
+
+        mockProducto.Verify(
+            p => p.ActualizarPrecio(6000m),
+            Times.Once);
+    }
+
+    [Fact]
+    public void AplicarDescuento_DebeLlamarActualizarPrecio()
+    {
+        var mockProducto = new Mock<Producto>(
+            "Hamburguesa", 8000m, "Comida");
+
+        mockProducto.SetupGet(p => p.Precio)
+            .Returns(8000m);
+
+        Tienda tienda = new();
+        tienda.AgregarProducto(mockProducto.Object);
+
+        tienda.AplicarDescuento("Hamburguesa", 25m);
+
+        mockProducto.Verify(
+            p => p.ActualizarPrecio(It.IsAny<decimal>()),
+            Times.Once);
     }
 }
